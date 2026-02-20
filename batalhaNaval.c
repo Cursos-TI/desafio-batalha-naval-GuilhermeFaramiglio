@@ -1,53 +1,58 @@
 #include <stdio.h>
+#include <stdbool.h>
 
-int main() {
-    int tabuleiro[10][10] = {
-        {0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,3,3,3,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,3,0,0,0,0,3,0},
-        {0,0,0,3,0,0,0,0,3,0},
-        {0,0,0,3,0,0,0,0,3,0},
-        {0,0,0,3,0,0,0,0,3,0},
-        {0,0,0,3,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0}
-    };
+#define TAM 10      // Tamanho do tabuleiro 10x10
+#define NAVIO 3    // Valor que representa o navio
+#define AGUA 0     // Valor que representa a água
 
-    // Exibição do tabuleiro completo
-    printf("Tabuleiro:\n");
-    for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 10; j++) {
+// Função para exibir o tabuleiro no console
+void exibirTabuleiro(int tabuleiro[TAM][TAM]) {
+    printf("=== TABULEIRO BATALHA NAVAL ===\n");
+    printf("Legenda: 0=Água, 3=Navio\n\n");
+    for (int i = 0; i < TAM; i++) {
+        for (int j = 0; j < TAM; j++) {
             printf("%d  ", tabuleiro[i][j]);
         }
         printf("\n");
     }
+}
 
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
+// Função para posicionar um navio no tabuleiro
+bool posicionarNavio(int tabuleiro[TAM][TAM], int linhaInicial, int colunaInicial, int dirVertical, int dirHorizontal) {
+    int tamanho = 3;
 
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
+    // Verifica se o navio cabe nos limites e se não sobrepõe outro
+    for (int i = 0; i < tamanho; i++) {
+        int novaL = linhaInicial + (i * dirVertical);
+        int novaC = colunaInicial + (i * dirHorizontal);
 
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
-    
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
+        // Verifica limites do tabuleiro (0 a 9)
+        if (novaL < 0 || novaL >= TAM || novaC < 0 || novaC >= TAM) return false;
 
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
+        // Verifica se já existe um navio (valor 3) naquela posição
+        if (tabuleiro[novaL][novaC] == NAVIO) return false;
+    }
+
+    // Se validou tudo, agora preenche com 3
+    for (int i = 0; i < tamanho; i++) {
+        tabuleiro[linhaInicial + (i * dirVertical)][colunaInicial + (i * dirHorizontal)] = NAVIO;
+    }
+
+    return true;
+}
+
+int main() {
+    // Inicializa o tabuleiro com 0 (água)
+    int tabuleiro[TAM][TAM] = {0};
+
+    // POSICIONAMENTO DOS NAVIOS
+    posicionarNavio(tabuleiro, 1, 1, 0, 1);
+    posicionarNavio(tabuleiro, 5, 8, 1, 0);
+    posicionarNavio(tabuleiro, 2, 5, 1, 1);
+    posicionarNavio(tabuleiro, 8, 2, -1, 1);
+
+    // Exibe o resultado final
+    exibirTabuleiro(tabuleiro);
 
     return 0;
 }
